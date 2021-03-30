@@ -2,14 +2,17 @@
     "name": "myapp",
     "version": "1.0.0",
     "description": "",
-    "main": "server.js",
+    "main": "test-keypair.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "node server.js"
+        "start": "node test-keypair.js"
     },
     "author": "",
     "license": "MIT",
     "dependencies": {
+        "@digitalbazaar/ed25519-verification-key-2020": "^2.0.0",
+        "@digitalbazaar/x25519-key-agreement-key-2019": "^5.0.1",
+        "crypto-ld": "^5.0.0",
         "ecdsa-secp256k1-signature-2019": "^1.0.1",
         "express": "^4.17.1",
         "jsonld-signatures": "^8.0.2",
