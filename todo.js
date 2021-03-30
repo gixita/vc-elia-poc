@@ -21,7 +21,7 @@
 // 	  "#key-1"
 // 	]
 //   }
-app.get('/did/<user>', (req,res) =>{
+app.get('/did/:user', (req,res) =>{
 	// return the did document of the user
 })
 
@@ -47,6 +47,27 @@ app.get('/did/<user>', (req,res) =>{
 // 	  "lang": "fr"
 // 	}]
 // }
+// The constrains should look like:
+// {
+// 	"constrains": [{
+// 		"type": "IdentyProviderClaimAttached",
+// 		"required": true
+// 	}]
+// }
+// The claim type should be like 
+// {
+// 	"claimType": {
+// 		"type": "consentOf"
+// 	}
+// }
+// Everything should be bundle in 
+// {
+// 	"claimRequest": {
+// 		"claimType": {},
+// 		"constrains": {},
+// 		"claims": {}
+//  	}
+// }
 
 app.post('/init_claim', (req,res) =>{
 	// call the format init claim function
@@ -54,3 +75,45 @@ app.post('/init_claim', (req,res) =>{
 	// return the id of claim for the redirection
 })
 
+
+// Should display the payload to the user, so he can copy it and paste it in the user interface
+// the payload should look like : 
+// {
+// 	"@context": [
+// 	  "https://www.w3.org/2018/credentials/v1",
+// 	  "http://localhost/schema/v1/vc-consentof"
+// 	],
+// 	"id": "http://example.edu/credentials/1872",
+// 	"type": ["VerifiableCredential", "AlumniCredential"],
+// 	"issuer": "https://example.edu/issuers/565049",
+// 	"issuanceDate": "2010-01-01T19:73:24Z",
+// 	"credentialSubject": {
+// 	  "id": "did:url:<<user>>",
+// 	  "consentOf": {
+// 		"id": "did:example:c276e12ec21ebfeb1f712ebc6f1",
+// 		"name": [{
+// 		  "value": "Example University",
+// 		  "lang": "en"
+// 		}, {
+// 		  "value": "Exemple d'Université",
+// 		  "lang": "fr"
+// 		}]
+// 	  }
+// 	},
+	
+// 	"proof": {
+// 	  "type": "RsaSignature2018",
+// 	  "created": "2017-06-18T21:19:10Z",
+// 	  "proofPurpose": "assertionMethod",
+// 	  "verificationMethod": "https://example.edu/issuers/keys/1",
+// 	  "jws": "eyJhbGciOiJSUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..TCYt5X
+// 		sITJX1CxPCT8yAV-TVkIEq_PbChOMqsLfRoPsnsgw5WEuts01mq-pQy7UJiN5mgRxD-WUc
+// 		X16dUEMGlv50aqzpqh4Qktb3rk-BuQy72IFLOqV0G_zS245-kronKb78cPN25DGlcTwLtj
+// 		PAYuNzVBAh4vGHSrQyHUdBBPM"
+// 	}
+//   }
+
+app.get('/display_qr_code/:id', (req,res) =>{
+	// display the payload that the user will need to sign
+	// res.render(payload[id])
+})
