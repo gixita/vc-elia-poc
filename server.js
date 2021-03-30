@@ -2,6 +2,7 @@ const express = require('express')
 const claimManagement = require('./server_modules/claim_management.js')
 const portal = require('./server_modules/portal.js')
 const userApp = require('./server_modules/user_app.js')
+const vc = require('vc-js');
 
 const claimManagementModule = new claimManagement('claim_management', 'claim_management');
 const portalModule = new claimManagement('portal', 'portal');
