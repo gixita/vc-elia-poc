@@ -10,8 +10,12 @@
     "author": "",
     "license": "MIT",
     "dependencies": {
+        "ecdsa-secp256k1-signature-2019": "^1.0.1",
         "express": "^4.17.1",
+        "jsonld-signatures": "^8.0.2",
         "nodemon": "^2.0.7",
-        "pug": "^3.0.2"
+        "pug": "^3.0.2",
+        "secp256k1-key-pair": "^1.1.0",
+        "vc-js": "^0.6.4"
     }
 }
