@@ -17,10 +17,11 @@
         "did-context": "^3.0.0",
         "ecdsa-secp256k1-signature-2019": "^1.0.1",
         "express": "^4.17.1",
-        "jsonld-signatures": "^4.6.0",
+        "jsonld": "^5.0.0",
+        "jsonld-signatures": "^4.4.0",
         "nodemon": "^2.0.7",
         "pug": "^3.0.2",
         "secp256k1-key-pair": "^1.1.0",
-        "vc-js": "^0.6.4"
+        "vc-js": "^0.2.0"
     }
 }
