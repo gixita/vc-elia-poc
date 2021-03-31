@@ -21,6 +21,17 @@ app.get('/index', (req, res) => {
     res.render('index')
 })
 
+app.post('/publickeydoc', (req,res) =>{
+	console.log('Got body:', req.body);
+	publicKeyDoc = req.body;
+	res.sendStatus(200);
+  })
+  
+  app.get('/publickeydoc', (req,res) =>{
+	  console.log('Got body:', publicKeyDoc);
+	  res.sendStatus(200);
+  })
+
 claimManagementModule.regApp(app);
 portalModule.regApp(app);
 userAppModule.regApp(app);
