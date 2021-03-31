@@ -496,7 +496,7 @@ template {
 
 @font-face {
   font-family: 'icomoon';
-  src: url("/../Elia_Files/icomoonWoff.woff") format("woff"), url("../Elia_Files/icomoonSvg.svg?o5c3v2#icomoon") format("svg");
+  src: url("/../Elia_Files/icomoon.woff") format("woff"), url("../Elia_Files/icomoonSvg.svg?o5c3v2#icomoon") format("svg");
   font-weight: normal;
   font-style: normal;
 }
