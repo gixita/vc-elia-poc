@@ -43,6 +43,7 @@ build/Release
 # Dependency directories
 node_modules/
 vc-js/node_modules/
+vc-js-cli/nodes_modules/
 jspm_packages/
 
 # TypeScript v1 declaration files
