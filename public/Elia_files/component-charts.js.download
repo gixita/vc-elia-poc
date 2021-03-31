@@ -1,0 +1,186 @@
+var LabelType;
+(function (LabelType) {
+    LabelType[LabelType["Auto"] = 0] = "Auto";
+    LabelType[LabelType["Percentage"] = 1] = "Percentage";
+    LabelType[LabelType["Euro"] = 2] = "Euro";
+})(LabelType || (LabelType = {}));
+var ChartComponent = (function () {
+    function ChartComponent($component) {
+        this.$component = $component;
+        this.initialize();
+    }
+    ChartComponent.initializeAll = function () {
+        var map = new Array();
+        jQuery("[data-role='chart']").each(function (index, element) {
+            map.push(new ChartComponent(jQuery(element)));
+        });
+        return map;
+    };
+    ChartComponent.prototype.initialize = function () {
+        var _this = this;
+        this.getModel().then(function (model) {
+            _this.buildLabelSet(model.options, model.data);
+            _this.chart = new Chart(_this.getCanvas(), {
+                type: "bar",
+                data: model.data,
+                options: _this.getFullOptions(model.options)
+            });
+            _this.$component.find("[data-role='legends']").html(_this.chart.generateLegend());
+            _this.$component.on("click", "[data-click='legend']", function (event) {
+                _this.toggleLegend(event);
+            });
+            _this.$component.data("chart", _this.chart);
+        });
+    };
+    ChartComponent.prototype.buildLabelSet = function (options, data) {
+        if (!options.scales || !options.scales.yAxes.length) {
+            return;
+        }
+        this.labelSets = [];
+        var _loop_1 = function (dataset) {
+            if (!dataset.yAxisID) {
+                axe = options.scales.yAxes[0];
+            }
+            else {
+                axe = options.scales.yAxes.filter(function (axe) {
+                    return axe.id === dataset.yAxisID;
+                })[0];
+            }
+            if (!axe) {
+                return "continue";
+            }
+            this_1.labelSets.push({
+                values: dataset.data,
+                suffix: axe.labelSuffix
+            });
+        };
+        var this_1 = this, axe;
+        for (var _i = 0, _a = data.datasets; _i < _a.length; _i++) {
+            var dataset = _a[_i];
+            _loop_1(dataset);
+        }
+    };
+    ChartComponent.prototype.toggleLegend = function (event) {
+        var $target = jQuery(event.target);
+        if ($target.length) {
+            var datasetIndex = $target.data('legend-index');
+            var meta = this.chart.getDatasetMeta(datasetIndex);
+            $target.toggleClass("legend-hidden");
+            meta.hidden = meta.hidden === null ? !this.chart.data.datasets[datasetIndex].hidden : null;
+            this.chart.update();
+        }
+    };
+    ChartComponent.prototype.getCanvas = function () {
+        return this.$component.find("canvas");
+    };
+    ChartComponent.prototype.getModel = function () {
+        var deferred = jQuery.Deferred();
+        jQuery.getJSON("/api/Chart", { chartId: this.$component.data("chart-id") }, function (model) {
+            deferred.resolve(model);
+        });
+        return deferred.promise();
+    };
+    ChartComponent.prototype.getFullOptions = function (options) {
+        var defaultOptions = {
+            responsive: true,
+            tooltips: {
+                mode: 'label',
+                xPadding: 12,
+                yPadding: 12,
+                cornerRadius: 5
+            },
+            elements: {
+                line: {
+                    tension: 0,
+                    borderWidth: 4
+                }
+            },
+            legendCallback: function (chart) {
+                var legendHtml = new Array();
+                legendHtml.push("<ul>");
+                for (var i = 0; i < chart.data.datasets.length; i++) {
+                    var dataset = chart.data.datasets[i];
+                    var borderLegend = "";
+                    if (dataset.borderColor) {
+                        borderLegend = "border: 3px solid " + dataset.borderColor;
+                    }
+                    legendHtml.push("<li><span class=\"chart-legend\" style=\"background-color: " + dataset.backgroundColor + "; " + borderLegend + "\"></span></li>");
+                    if (dataset.label) {
+                        legendHtml.push("<li class=\"chart-legend-label-text--" + i + "\" data-click=\"legend\" data-legend-index=\"" + chart.legend.legendItems[i].datasetIndex + "\">" + dataset.label + "</li>");
+                    }
+                }
+                legendHtml.push("</ul>");
+                return legendHtml.join("");
+            },
+            scales: {
+                xAxes: [{
+                        gridLines: {
+                            display: false
+                        }
+                    }]
+            },
+            legend: {
+                display: false
+            },
+        };
+        jQuery.extend(true, options, defaultOptions);
+        options = this.attachScaleSuffixCallbacks(options);
+        return options;
+    };
+    ChartComponent.prototype.attachScaleSuffixCallbacks = function (options) {
+        var _this = this;
+        try {
+            var scales = options.scales.yAxes;
+            for (var _i = 0, scales_1 = scales; _i < scales_1.length; _i++) {
+                var scale = scales_1[_i];
+                if (scale.ticks) {
+                    switch (scale.labelType) {
+                        case LabelType.Percentage:
+                            scale.ticks.callback = function (value, index, values) {
+                                return _this.createPercentageLabel(value);
+                            };
+                            break;
+                        case LabelType.Euro:
+                            scale.ticks.callback = function (value, index, values) {
+                                return _this.createEuroLabel(value);
+                            };
+                            break;
+                        default:
+                            scale.ticks.callback = function (value, index, values) {
+                                return _this.autoDetermineLabel(value, index, values);
+                            };
+                    }
+                }
+            }
+        }
+        catch (e) {
+            console.error('Error:', e);
+        }
+        return options;
+    };
+    ChartComponent.prototype.autoDetermineLabel = function (value, index, values) {
+        var labelsets = this.labelSets.filter(function (labelset) {
+            var smallestScaleValue = values.reduce(function (previous, current) { return Math.min(previous, current); });
+            var largestScaleValue = values.reduce(function (previous, current) { return Math.max(previous, current); });
+            var smallestDataValue = labelset.values.reduce(function (previous, current) { return Math.min(previous, current); });
+            var largestDataValue = labelset.values.reduce(function (previous, current) { return Math.max(previous, current); });
+            return smallestDataValue >= smallestScaleValue && largestDataValue <= largestScaleValue;
+        });
+        if (!labelsets.length) {
+            return value;
+        }
+        return value + labelsets[0].suffix;
+    };
+    ChartComponent.prototype.createPercentageLabel = function (value) {
+        return value + " %";
+    };
+    ChartComponent.prototype.createEuroLabel = function (value) {
+        return value + " EUR";
+    };
+    return ChartComponent;
+}());
+var factory = {};
+factory.init = function () {
+    return ChartComponent.initializeAll();
+};
+XA.register("chart", factory);

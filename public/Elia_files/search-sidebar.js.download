@@ -1,0 +1,16 @@
+$(document).ready(function () {
+  $('.js-show-filters[data-search-sidebar-trigger]').on('click', function (e) {
+    e.preventDefault();
+    var searchSideBarId = $(this).data('search-sidebar-trigger');
+    $(
+      '.search-sidebar[data-search-sidebar-id="' + searchSideBarId + '"]'
+    ).addClass('is-active');
+  });
+  $('.js-close-filters').on('click', function (e) {
+    e.preventDefault();
+    $(this).closest('.search-sidebar').removeClass('is-active');
+  });
+  $('.filterButton').on('click', function () {
+    $(this).closest('.search-sidebar').removeClass('is-active');
+  });
+});

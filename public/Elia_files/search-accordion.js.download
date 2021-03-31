@@ -1,0 +1,19 @@
+$(document).ready(function() {
+    if ($('.facet-heading').length) {
+        $('.facet-heading').addClass('active');
+    }
+    $(".facet-heading").click(function() {
+      if ($(this).next('.contentContainer').is(':visible')) {
+        $(this).removeClass('active');
+        $(this).next(".contentContainer").addClass('hidden');
+        $(this).next(".contentContainer").next(".bottom-filter-button").addClass('hidden');
+
+      } else {
+        $(this).next(".contentContainer").removeClass('hidden');
+        $(this).next(".contentContainer").next(".bottom-filter-button").removeClass('hidden');
+
+        $(this).addClass('active');
+
+      }
+    });
+  }); 

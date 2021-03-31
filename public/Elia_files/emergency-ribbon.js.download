@@ -1,0 +1,75 @@
+function closeEmergencyRibbon(ribbonId, saveCookie, cookieKey, necessaryCompliancyLevelCodes) {
+    // Set session cookie  with name ClosedEmergencyRibbon to ribbonId1|ribbonId2|ribbonId3
+    if (saveCookie) { // if compliancy level (cookiebar) has already been accepted before, and if it matches the necessary compliancy, than this shortcut is taken.
+		var cookies = getCookies();
+        setEmergencyRibbonCookie(ribbonId, cookieKey, cookies);
+    }
+	else { // in case the compliancy level (cookiebar) is accepted after rendering the page, we need to evaluate the accepted levels client side (because the savecookie value will only change after a page reload server side)
+		var cookies = getCookies();
+		var cookieLevelValue = cookies['cookie-level'];
+		if (cookieLevelValue) { // only go further if cookie-level cookie exists
+			if (necessaryCompliancyLevelCodes) // verify necessary vs accepted
+			{
+				var canProceed = false;
+				var necessaryCodes = necessaryCompliancyLevelCodes.split('|');
+				var acceptedCodes = cookieLevelValue.split('|');
+				var i,j;
+				for (i = 0; i < necessaryCodes.length; i++) {
+					var necessaryCode = necessaryCodes[i];
+					var found = false;
+					for (j = 0; j < acceptedCodes.length; j++) {
+						if (acceptedCodes[j] == necessaryCode)
+						{
+							found = true;
+						}
+					}
+					if (found)
+					{
+						canProceed = true;
+					}
+					else
+					{
+						canProceed = false;
+					}
+				}
+				if (canProceed)
+				{
+					setEmergencyRibbonCookie(ribbonId, cookieKey, cookies);
+				}
+			}
+			else // if no level necessary, continue
+			{
+				setEmergencyRibbonCookie(ribbonId, cookieKey, cookies);
+			}			
+		}
+	}
+    
+    $('#' + ribbonId).remove();
+}
+
+function setEmergencyRibbonCookie(ribbonId, cookieKey, cookies)
+{
+	var ribbonCookieValue = cookies[cookieKey];
+	if (ribbonCookieValue) {
+		ribbonCookieValue += "|" + ribbonId;
+	}
+	else {
+		ribbonCookieValue = ribbonId;
+	}
+	document.cookie = cookieKey + "=" + ribbonCookieValue + ";path=/";
+}
+
+function getCookies()
+{
+	var cookieList = document.cookie.split(";");
+	var cookies = {};
+	for (var i = 0; i < cookieList.length; i++) {
+		var cookieParts = cookieList[i].split("=");
+		cookies[cookieParts[0].trim()] = cookieParts[1].trim();
+	}
+	return cookies;
+}
+
+$(document).ready(function(){
+	$('.emergency-ribbon').css('top',  $('.header').outerHeight());
+}); 

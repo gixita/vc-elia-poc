@@ -1,0 +1,61 @@
+$(document).ready(function () {
+    
+    $('#jsSearch').on('click', function (e) {
+        e.preventDefault();
+        var searchBoxClose = $('<a href="#" class="search-box-close" id="jsSearchBoxClose"><span class="icon-x"></span></a>');
+        $('.header-main .search-box').addClass('is-open');
+        $('.nav-main-item').fadeOut('fast');
+        $('.header-main .search-box').append(searchBoxClose);
+        var backdrop = $('<div class="backdrop-header-search"></div>');
+        $('body').addClass('hide-scroll').append(backdrop);
+        if ($(window).width() <= 767) {
+            $('.logo').fadeOut('fast');
+            $('.header').css({
+                'background-color': 'white',
+                'position': 'relative',
+                'z-index': '999'
+            });
+            
+        } else {
+            var searchCompLeft = $('.logo > img').width() + 20;
+            $('.header-main .search-box .component-content').css('left', searchCompLeft);
+            var headerHeight = $('.header').outerHeight() + 10;
+            $('.backdrop-header-search').css('top', headerHeight);
+
+        }
+    });
+
+    $(document).on('click', '#jsSearchBoxClose', function (e) {
+        e.preventDefault();
+        $('.header-main .search-box').removeClass('is-open');
+        $(this).remove();
+        $('body').removeClass('hide-scroll');
+        $('.backdrop-header-search').remove();
+        if ($(window).width() < 768) {
+            $('.nav-main-item-toggle, .nav-main-item-search').fadeIn('400').css("display", "inline-block");
+            $('.logo').fadeIn('fast');
+            $('.header').removeAttr('style');
+        } else {
+            $('.nav-main-item').fadeIn('400').css("display", "inline-block");
+        }
+    });
+
+    $(document).on('click touchStart', function (e) {
+        if (!$('.header-main').is(e.target) && $('.header-main').has(e.target).length === 0) {
+            $('.header-main .search-box').removeClass('is-open');
+            $('#jsSearchBoxClose').remove();
+            $('body').removeClass('hide-scroll');
+            $('.backdrop-header-search').remove();
+            
+            if ($(window).width() < 768) {
+                $('.nav-main-item-toggle, .nav-main-item-search').fadeIn('400');
+                $('.logo').fadeIn('fast');
+                $('.header').removeAttr('style');
+
+            } else {
+                $('.nav-main-item').fadeIn('400').css("display", "inline-block");
+            }
+        }
+    });
+
+});

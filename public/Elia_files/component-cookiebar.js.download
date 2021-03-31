@@ -1,0 +1,84 @@
+var CookieBar = (function () {
+    function CookieBar() {
+        this.$element = jQuery(".privacy-bar");
+        this.properties = this.$element.data("properties");
+        this.popup = new Popup(this);
+        this.bindEvents();
+    }
+    CookieBar.prototype.createCookie = function (cookieValue) {
+        XA.cookies.createCookie(this.properties.cookieName, cookieValue, 365);
+    };
+    CookieBar.prototype.close = function () {
+        this.$element.toggleClass("hidden");
+    };
+    CookieBar.prototype.bindEvents = function () {
+        var _this = this;
+        this.$element.find(".close a").on("click", function (event) { _this.cancel(event); });
+        this.$element.find(".accept a").on("click", function (event) { _this.acceptAll(event); });
+        this.$element.find(".preferences a").on("click", function (event) { _this.showPopup(event); });
+    };
+    CookieBar.prototype.cancel = function (event) {
+        event.preventDefault();
+        this.close();
+    };
+    CookieBar.prototype.acceptAll = function (event) {
+        event.preventDefault();
+        this.createCookie(this.properties.defaultLevel);
+        this.close();
+    };
+    CookieBar.prototype.showPopup = function (event) {
+        event.preventDefault();
+        this.popup.show();
+    };
+    return CookieBar;
+}());
+var Popup = (function () {
+    function Popup(cookieBar) {
+        this.$element = jQuery(".privacy-popup");
+        this.cookieBar = cookieBar;
+        this.bindEvents();
+    }
+    Popup.prototype.show = function () {
+        this.$element.removeClass("hidden");
+    };
+    Popup.prototype.bindEvents = function () {
+        var _this = this;
+        this.$element.find(".close a").on("click", function (event) { _this.cancel(event); });
+        this.$element.find(".level").on("click", function (event) { _this.handleLevelClick(event); });
+        this.$element.find("button.submit").on("click", function (event) { _this.submit(event); });
+    };
+    Popup.prototype.cancel = function (event) {
+        event.preventDefault();
+        this.close();
+    };
+    Popup.prototype.handleLevelClick = function (event) {
+        event.preventDefault();
+        var $clickedLevel = jQuery(event.currentTarget);
+        if ($clickedLevel.hasClass("read-only")) {
+            return;
+        }
+        $clickedLevel.toggleClass("checked");
+    };
+    Popup.prototype.submit = function (event) {
+        event.preventDefault();
+        var $activeLevels = this.$element.find(".level.checked");
+        var levelCode = $activeLevels
+            .map(function (index, level) {
+            return jQuery(level).data("code");
+        })
+            .get()
+            .join("|");
+        this.cookieBar.createCookie(levelCode);
+        this.close();
+        this.cookieBar.close();
+    };
+    Popup.prototype.close = function () {
+        this.$element.addClass("hidden");
+    };
+    return Popup;
+}());
+var factory = {};
+factory.init = function () {
+    return new CookieBar();
+};
+XA.register("cookiebar", factory);

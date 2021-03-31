@@ -1,0 +1,66 @@
+$(document).ready(function(){
+
+    var disclaimerpopup = {
+        popupwrap: $('.disclaimerpopup'),
+        popupcontent: $('.disclaimer-content'),
+        popupCloseBtn: $('.disclaimerclose, #disclaimerAgree'),
+        showHideContentBtn: $('#jsShowHide'),
+        popupIdVal: $('input#disclaimerscid').val(),
+
+        setPopupCookie: function (){
+            var baseName = 'disclaimerpopup';
+            var cookieName = baseName + '-' + disclaimerpopup.popupIdVal;
+            document.cookie = cookieName + "=" + cookieName + ";" + "path=/";
+        },
+        getPopupCookie: function(cname) {
+          var name = cname + "=";
+          var ca = document.cookie.split(';');
+          for(var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+              c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+              return c.substring(name.length, c.length);
+            }
+          }
+          return "";
+        },
+        openPopup: function() {
+            var baseName = 'disclaimerpopup';
+            var cookieName = baseName + '-' + disclaimerpopup.popupIdVal;
+            var popupCookie = disclaimerpopup.getPopupCookie(cookieName);
+            if (popupCookie == '') {
+                disclaimerpopup.popupwrap.removeClass('hidden');
+                $('body').addClass('disclaimerpopup-open');
+            }
+        },
+        closePopup: function() {
+            var popupCookie = disclaimerpopup.getPopupCookie("popupShowed");
+            disclaimerpopup.popupwrap.addClass('hidden');
+            $('body').removeClass('disclaimerpopup-open');
+            disclaimerpopup.setPopupCookie();
+        },
+        showHideContent: function () {
+            $('.disclaimer-content-extended').toggleClass('hidden');
+        }
+    }
+
+    if(disclaimerpopup.popupwrap.length) {
+        disclaimerpopup.openPopup();
+    }
+
+    disclaimerpopup.popupCloseBtn.click(function(e) {
+        e.preventDefault();
+        disclaimerpopup.closePopup();
+    });
+
+    disclaimerpopup.showHideContentBtn.click(function(e) {
+        e.preventDefault();
+        $(this).find('.jsToggleText').toggleClass('hidden');
+        disclaimerpopup.showHideContent();
+    });
+	
+
+
+});

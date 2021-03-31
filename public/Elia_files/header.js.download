@@ -1,0 +1,83 @@
+$(document).on('keyup mouseup', function(e) {
+    var sidebar = $("#jsNavSidebar");
+    if (!sidebar.is(e.target) && sidebar.has(e.target).length === 0 || e.keyCode == 27 ) {
+        $('#jsNavSidebar').removeClass('is-active');
+        $('.backdrop').remove();
+    }
+});
+
+var sidebar = {
+    sidebarWrap: $("#jsNavSidebar"),
+    backdrop: "<div class='backdrop'></div>",
+    toggleSidebar: function () {
+        $(document).on('click', "#jsToggle, #jsCloseNavSidebar", function (e) {
+            if($('.backdrop').length) {
+                $('.backdrop').remove();
+            } else {
+                $('body').append(sidebar.backdrop);
+            }
+            $("#jsNavSidebar").toggleClass('is-active');
+        });
+    },
+    closeOnclickOutsideSidebar: function () {
+        $(document).on('click touchstart', function(e) {
+            if (!sidebar.sidebarWrap.is(e.target) && sidebar.sidebarWrap.has(e.target).length === 0) {
+                $("#jsNavSidebar").removeClass('is-active');
+                $('.backdrop').remove();
+            }
+        });
+    },
+    init: function() {
+        sidebar.toggleSidebar();
+    }
+}
+
+
+$(document).ready(function(){
+
+
+    // Hide Header on on scroll down
+    var $header =  $('.header');
+    var didScroll;
+    var lastScrollTop = 0;
+    var navbarHeight = $header.outerHeight();
+    var headerHeroHeight = navbarHeight + $('.hero').outerHeight();
+    var delta = 10;
+
+    $(window).scroll(function(event){
+        didScroll = true;
+        if ($(window).scrollTop() === 0) {
+            $header.removeClass('header-up header-down').addClass('header-top');
+            $('#wrapper').removeClass('header-sticky');
+            $('.jsAnchorNav').removeClass('anchor-nav-sticky');
+            // $('.anchor-nav').find('.anchor-nav-item').first().addClass('active');
+        } else {
+            $header.removeClass('header-top');
+        }
+        if (didScroll && $(window).scrollTop() > navbarHeight) {
+                hasScrolled();
+                didScroll = false;
+        }
+    });
+
+    function hasScrolled() {
+        var st = $(this).scrollTop();
+        if(Math.abs(lastScrollTop - st) <= delta)
+            return;
+        if (st > lastScrollTop && st > navbarHeight){
+            // Scroll Down
+            $header.removeClass('header-down').addClass('header-up');
+            $('#wrapper').removeClass('header-sticky');
+			$('.anchor-nav-sticky').css('top', '');
+            // $('.jsAnchorNav').addClass('anchor-nav-sticky');
+        } else {
+            // Scroll Up
+            if(st + $(window).height() < $(document).height()) {
+                $header.removeClass('header-up').addClass('header-down');
+                $('#wrapper').addClass('header-sticky');
+            }
+        }
+        lastScrollTop = st;
+    }
+
+});

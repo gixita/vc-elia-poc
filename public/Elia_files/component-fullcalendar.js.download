@@ -1,0 +1,405 @@
+/* global googleCalendarApiKey:true */
+XA.component.calendar = (function ($) {
+
+    function GetEvents(selector, options) {
+        this.data = options.data;
+        this.selector = selector;
+        this.options = options;
+        this.events = [];
+        this.options.eventStyles = [];
+        this.options.eventStyleNames = [];
+        this.checkSource();
+    }
+
+    GetEvents.prototype.checkSource = function () {
+        var inst = this;
+
+        switch (inst.options.dataType) {
+            case "json":
+                inst.getJson();
+                new InitCalendar(inst.selector, inst.options, inst.events);
+                break;
+            case "gcalendar":
+                new InitCalendar(inst.selector, inst.options, inst.events);
+                break;
+        }
+
+    };
+
+    GetEvents.prototype.getJson = function () {
+        var inst = this,
+            date, dateEnd,
+            tempObj = [];
+
+
+        var parser = new DOMParser;
+
+        $.each(inst.data, function () {
+            var titleParsed = parser.parseFromString(
+                '<!doctype html><body>' + this.eventName,
+                'text/html');
+            var titleDecoded = titleParsed.body.textContent;
+            var descParsed = parser.parseFromString(
+                '<!doctype html><body>' + this.eventDescription,
+                'text/html');
+            var descDecoded = descParsed.body.textContent;
+            var placeParsed = parser.parseFromString(
+                '<!doctype html><body>' + this.eventPlace,
+                'text/html');
+            var placeDecoded = placeParsed.body.textContent;
+
+            date = new Date(this.eventStart);
+            dateEnd = new Date(this.eventEnd);
+            if (this.eventAllDay === 'false') {
+                tempObj = {
+                    title: titleDecoded,
+                    start: date,
+                    end: dateEnd,
+                    eventDescription: descDecoded,
+                    eventLink: this.eventLink,
+                    eventPlace: placeDecoded,
+                    eventClass: this.eventClass,
+                    allDay: false,
+                    eventAllDayText: this.eventAllDayText,
+                    backgroundColor: this.eventStyle,
+                    borderColor: this.eventStyle,
+                };
+            }
+            else {
+                tempObj = {
+                    title: titleDecoded,
+                    start: date,
+                    eventDescription: descDecoded,
+                    eventLink: this.eventLink,
+                    eventPlace: placeDecoded,
+                    eventClass: this.eventClass,
+                    allDay: true,
+                    eventAllDayText: this.eventAllDayText,
+                    backgroundColor: this.eventStyle,
+                    borderColor: this.eventStyle,
+                };
+            }
+
+            inst.events.push(tempObj);
+            if (inst.options.eventStyles.indexOf(this.eventStyle) === -1) {
+                inst.options.eventStyles.push(this.eventStyle);
+                inst.options.eventStyleNames.push(this.eventStyleName);
+            }
+        });
+
+    };
+
+
+    /*--------------------------------------------*/
+
+    function InitCalendar(selector, options, events) {
+        var inst = this,
+            prevNext = "",
+            title = "",
+            calendarTypes = "",
+            customBtns = 'listViewBtn';
+
+        if (options.dataType === "gcalendar") {
+            googleCalendarApiKey = options.calendarApiKey;
+            events = options.calendarId;
+        } else {
+            googleCalendarApiKey = null;
+        }
+
+        options.showPrevNext ? prevNext = "prev, next" : "";
+        options.showMonthCaptions ? title = "prev, title, next" : "";
+
+        for (var i in options.calendarTypes) {
+            if (options.calendarTypes[i] === "day") {
+                options.calendarTypes[i] = "basicDay";
+            } else if (options.calendarTypes[i] === "week") {
+                options.calendarTypes[i] = "basicWeek";
+            }
+        }
+
+        if (options.calendarTypes.length > 1) {
+            calendarTypes = options.calendarTypes.join();
+        }
+
+        //if (options.eventStyles.length >= 1) {
+        //	inst.renderLegend(selector, options.eventStyles);
+        //}
+
+        $(selector).fullCalendar({
+            locale: options.requestLanguage,
+            plugins: ['list', 'dayGrid'],
+            defaultView: $(window).width() < 765 ? 'listMonth' : 'month',
+
+            monthNames: options.localization.monthNames,
+            monthNamesShort: options.localization.monthNamesShort,
+            dayNames: options.localization.dayNames,
+            dayNamesShort: options.localization.dayNamesShort,
+            nextDayThreshold: '00:00',
+            
+            buttonText: {
+                agendaDay: options.localization.buttonText.agendaday,
+                agendaWeek: options.localization.buttonText.agendaweek
+            },
+            
+            header: {
+                left:   calendarTypes + ' ' + customBtns,
+                center: title,
+                right: 'today'
+            },
+            googleCalendarApiKey: googleCalendarApiKey,
+            events: events,
+            timeFormat: 'H:mm',
+            renderEvent: false,
+            // contentHeight: 'auto',
+            eventRender: function (event, element) {
+                if ((options.compactView) && (options.dataType === "json")) {
+                    $(element).css("display", "none");
+                } else {
+                    if (options.dataType === "json") {
+                        inst.attachTooltip(event, element, false);
+                    }
+                }
+
+                element.addClass(event.eventClass);
+            },
+            eventAfterAllRender: function () {
+                if ((options.compactView) && (options.dataType === "json")) {
+                    inst.renderCompactCalendarEvents(selector, events);
+                }
+                if (options.eventStyles.length >= 1) {
+                    inst.renderLegend(selector, options.eventStyles, options.eventStyleNames);
+                }
+
+            },
+            // add listview button
+            customButtons: {
+                listViewBtn: {
+                    text: options.localization.buttonText.listview,
+                    click: function() {
+                        $(selector).fullCalendar('changeView', 'listMonth');
+                        $('.fc-monthViewBtn-button').removeClass('fc-state-active');
+                        $(this).addClass('fc-state-active');
+                    }
+                }
+            }
+        });
+    
+
+    }
+
+    InitCalendar.prototype.renderLegend = function (selector, eventStyles, eventStyleNames) {
+        var listOfEventStyles = "";
+        if (!$('.fc-legend').length) {
+            for (var i in eventStyles) {
+                listOfEventStyles += "<li> <span class='bgc' style='background-color:" + eventStyles[i] + "'>" + "</span>" + "<span>" + eventStyleNames[i] + "</span> </li>";
+            }
+            var legendMarkup = "<div class='fc-legend'><ul>" + listOfEventStyles + "</ul></div>";
+            var toolbarSelector = $(".fc-toolbar");
+            $(legendMarkup).insertBefore(toolbarSelector)
+        }
+    }
+
+    InitCalendar.prototype.attachTooltip = function (event, element, compactCalendar) {
+        var $tooltip,
+            tooltipContent;
+
+        function addZero(i) {
+            if (i < 10) {
+                i = "0" + i;
+            }
+            return i;
+        }
+
+        var startDate = new Date(event.start),
+            startDateDay = startDate.getDate(),
+            startDateMonth = startDate.getMonth() + 1,
+            startDateYear = startDate.getFullYear(),
+            startDateHours = addZero(startDate.getHours()),
+            startDateMinutes = addZero(startDate.getMinutes()),
+            startDateTimestamp = startDateDay + '/' + startDateMonth + '/' + startDateYear + ' ' + startDateHours + ':' + startDateMinutes;
+        var endDate = new Date(event.end),
+            endDateDay = endDate.getDate(),
+            endDateMonth = endDate.getMonth() + 1,
+            endDateYear = endDate.getFullYear(),
+            endDateHours = addZero(endDate.getHours()),
+            endDateMinutes = addZero(endDate.getMinutes()),
+            endDateTimestamp = endDateDay + '/' + endDateMonth + '/' + endDateYear + ' ' + endDateHours + ':' + endDateMinutes;
+
+        if ( document.documentElement.lang.toLowerCase() === "en" ) {
+            var startDateTimestamp = startDateMonth + '/' + startDateDay + '/' + startDateYear + ' ' + startDateHours + ':' + startDateMinutes;
+            var endDateTimestamp = endDateMonth + '/' + endDateDay + '/' + endDateYear + ' ' + endDateHours + ':' + endDateMinutes;
+            
+        }
+
+        $(element).on("mouseenter", function () {
+            tooltipContent = "";
+            $(".calendar-tooltip").fadeOut();
+            $(".calendar-tooltip").remove();
+
+            if (compactCalendar) {
+                tooltipContent = "";
+                $.each(event, function () {
+                    tooltipContent += "<div class='compact-event'>" +
+                        "<span class='title'>" + this.title + "</span>" +
+                        "<span class='description'>" + this.eventDescription + "</span>" +
+                        "<span class='location'>" + this.eventPlace + "</span>" +
+                        "<span class='link'><a href='" + this.eventLink + "'>Link</a></span></div>";
+                });
+            } else {
+                tooltipContent = "<span class='event-title'>" + event.title + "</span>";
+                if (event.allDay) {
+                    tooltipContent += "<span class='date'>" + event.eventAllDayText + "</span>";
+                }
+                else {
+                    tooltipContent += "<span class='date'>" + startDateTimestamp + '<br/>' + endDateTimestamp + "</span>";
+                }
+                tooltipContent += "<span class='description'>" + event.eventDescription + "</span>" +
+                    "<span class='location'>" + event.eventPlace + "</span>" +
+                    "<span class='link'>" + event.eventLink + "</span>";
+            }
+            $tooltip = $("<div class='calendar-tooltip'><div class='arrow'>" +
+                "</div><div class='events'>" + tooltipContent + "</div></div>");
+            $("body").append($tooltip);
+
+
+            $tooltip.css({
+                "left": $(this).offset().left + $(this).width() / 2 - 80
+            });
+            $tooltip.css({
+                "top": $(this).offset().top + $(this).height() / 2 + 5
+            });
+
+            var timeout;
+            $(this).unbind("mouseleave");
+            $(this).on("mouseleave", function () {
+                timeout = setTimeout(function () {
+                    $tooltip.fadeOut(function () {
+                        $(this).remove();
+                    });
+                }, 300);
+
+                $tooltip.unbind("mouseenter");
+                $tooltip.on("mouseenter", function () {
+                    clearTimeout(timeout);
+                });
+            });
+
+
+            $tooltip.unbind("mouseleave");
+            $tooltip.on("mouseleave", function () {
+                $(this).fadeOut(function () {
+                    $(this).remove();
+                });
+
+            });
+
+        });
+    };
+
+    //attach events for single days - compact calendar*/
+    InitCalendar.prototype.renderCompactCalendarEvents = function (selector, events) {
+        var inst = this,
+            currentDay,
+            currentDate,
+            currentEvent,
+            dc, mc, yc,
+            d, m, y, de, me, ye, he,
+            startDate,
+            endDate,
+            dayEvents = [];
+
+        $(selector).find(".fc-day").each(function () {
+            currentDay = this;
+
+            currentDate = new Date($(this).data("date"));
+            dc = currentDate.getDate();
+            mc = currentDate.getMonth();
+            yc = currentDate.getFullYear();
+
+            dayEvents = [];
+            $.each(events, function () {
+                currentEvent = this;
+                startDate = new Date(this.start);
+                d = startDate.getDate();
+                m = startDate.getMonth();
+                y = startDate.getFullYear();
+
+                if (this.end) {
+                    endDate = new Date(this.end);
+                    de = endDate.getDate();
+                    me = endDate.getMonth();
+                    ye = endDate.getFullYear();
+                    he = endDate.getHours();
+                }
+
+                if ((yc >= y) && (yc <= ye) && (mc >= m) && (mc <= me) && (dc >= d) && (dc <= de)) {
+                    if ((yc == ye) && (mc == me) && (dc == de) && (he < 9)) {
+                        // If last day and hour < 9 do nothing
+                    } else {
+                        $(currentDay).addClass("selected-day");
+                        dayEvents.push(currentEvent);
+                    }
+                }
+            });
+
+            if (dayEvents.length) {
+                inst.attachTooltip(dayEvents, currentDay, true);
+            }
+        });
+
+    };
+
+
+    function resizeCalendar(selector) {
+        $(selector).fullCalendar("render");
+    }
+
+
+    var pub = {};
+
+    pub.initInstance = function (component, prop) {
+        var selector = "#" + component.find(".event-calendar-inner").attr("id");
+        if ((prop.compactView) && (prop.dataType === "json")) {
+            $(this).addClass("compact-mode");
+        }
+
+        new GetEvents(selector, prop);
+
+        $(window).resize(function () {
+            resizeCalendar(selector);
+        });
+
+    }
+
+
+    pub.init = function () {
+        $(".event-calendar:not(.initialized)").each(function () {
+            var properties = $(this).data("properties");
+            pub.initInstance($(this), properties);
+            $(this).addClass("initialized");
+        });
+        setCalendarHeight(); 
+    };
+   
+    $(document).on('click', '.fc-button-group .fc-button', function(){
+        $('.fc-listViewBtn-button').removeClass('fc-state-active');
+    });    
+
+    $(document).on('click', '.fc-prev-button, .fc-next-button', function(){
+        setCalendarHeight();
+    });
+
+    return pub;
+
+
+})(jQuery, document);
+
+XA.register("calendar", XA.component.calendar);
+
+
+function setCalendarHeight() {
+    var contentHeight = $('.fc-scroller > .fc-list-table').height();
+    $(".fc-scroller").height(contentHeight);
+    console.log('height set on event calendar');
+}
+ 

@@ -1,0 +1,99 @@
+var dropdown =  {
+    dropdownContent: $('.sub-dropdown-content'),
+    toggleContent: function(toggleBtn) {
+        if ($(toggleBtn).parent().next(dropdown.dropdownContent).is(':visible')) {
+          $(toggleBtn).parent().parent().removeClass('is-active');
+          $(toggleBtn).parent().next(dropdown.dropdownContent).addClass('hidden');
+        } else {
+          $(toggleBtn).parent().next(dropdown.dropdownContent).removeClass('hidden');
+          $(toggleBtn).parent().parent().addClass('is-active');
+        }
+      },
+      init: function(toggleBtn) {
+          dropdown.toggleContent(toggleBtn);
+      }
+}
+ 
+$(document).on('click', '.JSbtn-sub-dropdown', function(e){
+  e.preventDefault();
+  if ($(this).hasClass('subsub')) {
+    $(this)
+      .parent().parent()
+      .siblings('.sub-dropdown-content-item')
+      .removeClass('is-active')
+      .find('.sub-dropdown-content')
+      .addClass('hidden')
+      .find('.sub-dropdown-content-item.is-active')
+      .removeClass('is-active');
+  } else if ($(this).parents('.mobile-only').length && $(this).hasClass('subsub')) {
+    $(this)
+      .parent().parent()
+      .siblings('.sub-dropdown-content-item')
+      .removeClass('is-active')
+      .find('.sub-dropdown-content')
+      .addClass('hidden')
+      .find('.sub-dropdown-content-item.is-active')
+      .removeClass('is-active');
+
+  } 
+  else {
+    if (!$(this).parents('.mobile-only').length) {
+      $('.mobile-only')
+      .children('.dropdown-content-item')
+      .removeClass('is-active')
+      .find('.sub-dropdown-content')
+      .addClass('hidden')
+      .find('.sub-dropdown-content-item.is-active')
+      .removeClass('is-active');
+    } else {
+      $('.mobile-only').nextAll('.dropdown-content-item')
+      .removeClass('is-active')
+      .find('.sub-dropdown-content')
+      .addClass('hidden')
+      .find('.sub-dropdown-content-item.is-active')
+      .removeClass('is-active');
+    }
+    $(this)
+      .parent().parent()
+      .siblings('.dropdown-content-item')
+      .removeClass('is-active')
+      .find('.sub-dropdown-content')
+      .addClass('hidden')
+      .find('.sub-dropdown-content-item.is-active')
+      .removeClass('is-active');
+  }
+  dropdown.init($(this));
+});
+
+$(document).ready(function(){
+    $('.sub-dropdown-content-item > nav > .JSbtn-sub-dropdown').addClass('subsub')
+    $('.dropdown').hover( function(){
+           $(this).addClass('hover')
+        }, function(){
+           $(this).removeClass('hover')
+        }
+    )
+    if(is_touch_device()) {
+        $('body').addClass('touch');
+        $('.dropdown > a').on('click', function(e){
+            e.preventDefault();
+            $(this).parent('.dropdown').toggleClass('hover')
+        })
+    }
+});
+
+function is_touch_device() {
+  var prefixes = ' -webkit- -moz- -o- -ms- '.split(' ');
+  var mq = function(query) {
+    return window.matchMedia(query).matches;
+  }
+
+  if (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch) {
+    return true;
+  }
+
+  // include the 'heartz' as a way to have a non matching MQ to help terminate the join
+  // https://git.io/vznFH
+  var query = ['(', prefixes.join('touch-enabled),('), 'heartz', ')'].join('');
+  return mq(query);
+}

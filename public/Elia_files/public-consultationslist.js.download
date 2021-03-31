@@ -1,0 +1,6 @@
+$( document ).ready(function() {
+    $('.public-consultations-list').each(function(index) {
+        // $(this).attr('id', 'public-consultations-list'+index);
+        setLazyLoading($(this).find('.component-content'), $(this).find('.items > li'));
+    });
+});

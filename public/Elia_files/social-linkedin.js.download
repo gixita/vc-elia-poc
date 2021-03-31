@@ -1,0 +1,29 @@
+$(function() {
+    var getWindowOptions = function() {
+        var width = 500;
+        var height = 350;
+        var left = (window.innerWidth / 2) - (width / 2);
+        var top = (window.innerHeight / 2) - (height / 2);
+
+        return [
+            'resizable,scrollbars,status',
+            'height=' + height,
+            'width=' + width,
+            'left=' + left,
+            'top=' + top,
+        ].join();
+    };
+    var linkedInBtn = $('.linkedIn-share-btn');
+    // var text = encodeURIComponent('Hey everyone, come & see how good I look!');
+    var shareUrl = 'https://www.linkedin.com/shareArticle?mini=true&url=' + location.href; // + '&title=' + text
+    linkedInBtn.href = shareUrl;
+
+    linkedInBtn.on('click', function(e){
+        e.preventDefault();
+        var win = window.open(shareUrl, getWindowOptions());
+        win.opener = null; 
+    });
+
+
+});
+

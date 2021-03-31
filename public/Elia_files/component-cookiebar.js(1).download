@@ -1,0 +1,134 @@
+var CookieBar = (function () {
+    function CookieBar() {
+        this.$elementoverlay = jQuery("[data-scope='privacy-blocking-overlay']");
+        this.$element = jQuery("[data-scope='privacy-bar']");
+        this.$widgetelement = jQuery("[data-scope='privacy-preference-widget']");
+        this.$popupelement = jQuery("[data-scope='privacy-popup']");
+        this.properties = this.$element.data("properties");
+        this.popupproperties = this.$popupelement.data("properties");
+        this.popupwidget = new PopupWidget(this);
+        this.bindEvents();
+    }
+    CookieBar.prototype.createCookie = function (cookieValue) {
+        XA.cookies.createCookie(this.popupproperties.cookieName, cookieValue, 270);
+    };
+    CookieBar.prototype.close = function () {
+        this.$elementoverlay.remove();
+    };
+    CookieBar.prototype.bindEvents = function () {
+        var _this = this;
+        this.$element
+            .find("[data-click='close']")
+            .on("click", function (event) {
+            _this.cancel(event);
+        });
+        this.$element
+            .find("[data-click='accept-all']")
+            .on("click", function (event) {
+            _this.acceptAll(event);
+        });
+        this.$element
+            .find("[data-click='deny-all']")
+            .on("click", function (event) {
+            _this.denyAll(event);
+        });
+        this.$element
+            .find("[data-click='open-popup']")
+            .on("click", function (event) {
+            _this.showPopupWidget(event);
+        });
+        this.$widgetelement
+            .find("[data-click='open-popup']")
+            .on("click", function (event) {
+            _this.showPopupWidget(event);
+        });
+    };
+    CookieBar.prototype.cancel = function (event) {
+        event.preventDefault();
+        this.close();
+    };
+    CookieBar.prototype.acceptAll = function (event) {
+        event.preventDefault();
+        this.createCookie(this.properties.defaultLevel);
+        this.close();
+        this.$widgetelement.removeClass("hidden");
+    };
+    CookieBar.prototype.denyAll = function (event) {
+        event.preventDefault();
+        this.createCookie(this.properties.minimumLevel);
+        this.close();
+        this.$widgetelement.removeClass("hidden");
+    };
+    CookieBar.prototype.showPopupWidget = function (event) {
+        event.preventDefault();
+        this.popupwidget.show();
+    };
+    return CookieBar;
+}());
+var PopupWidget = (function () {
+    function PopupWidget(cookieBar) {
+        this.$element = jQuery("[data-scope='privacy-popup']");
+        this.$widgetelement = jQuery("[data-scope='privacy-preference-widget']");
+        this.properties = this.$element.data("properties");
+        this.cookieBar = cookieBar;
+        this.bindEvents();
+    }
+    PopupWidget.prototype.show = function () {
+        this.$element.removeClass("hidden");
+    };
+    PopupWidget.prototype.bindEvents = function () {
+        var _this = this;
+        this.$element
+            .find("[data-click='close']")
+            .on("click", function (event) {
+            _this.cancel(event);
+        });
+        this.$element
+            .find("[data-click='level']")
+            .on("click", function (event) {
+            _this.handleLevelClick(event);
+        });
+        this.$element
+            .find("[data-click='submit']")
+            .on("click", function (event) {
+            _this.submit(event);
+        });
+    };
+    PopupWidget.prototype.cancel = function (event) {
+        event.preventDefault();
+        this.close();
+    };
+    PopupWidget.prototype.handleLevelClick = function (event) {
+        event.preventDefault();
+        var $clickedLevel = jQuery(event.currentTarget);
+        if ($clickedLevel.hasClass("read-only")) {
+            return;
+        }
+        $clickedLevel.toggleClass("checked");
+    };
+    PopupWidget.prototype.submit = function (event) {
+        event.preventDefault();
+        var $activeLevels = this.$element.find(".level.checked");
+        var levelCode = $activeLevels
+            .map(function (index, level) {
+            return jQuery(level).data("code");
+        })
+            .get()
+            .join("|");
+        XA.cookies.createCookie(this.properties.cookieName, levelCode, 270);
+        this.close();
+        if (this.cookieBar) {
+            this.cookieBar.close();
+            this.$widgetelement.removeClass("hidden");
+        }
+    };
+    PopupWidget.prototype.close = function () {
+        this.$element.addClass("hidden");
+    };
+    return PopupWidget;
+}());
+var factory = {};
+factory.init = function () {
+    return new CookieBar();
+};
+XA.register("cookiebar", factory);

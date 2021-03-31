@@ -1,0 +1,162 @@
+$(document).ready(function () {
+	$('.persona-list-link').click(function (e) { e.preventDefault(); ShowHidePersona($(this).attr('data-personaid')); return false; });
+
+	if ($('input#personaCookieAllowed').val()) {
+		if ($('input#personaCookieAllowed').val() == 'true') {
+
+			if ($('input#currentPersonaCookieValue').val()) {
+				ShowHidePersona($('input#currentPersonaCookieValue').val());
+			}
+		}
+		else {
+			DeleteFromPersonaCookie('persona-cookie');
+		}
+	}
+
+	$("#personaSearch").focus(function () {
+		$("#personaSearch").val('');
+		$("#personaListDiv").css("display", "block");
+		//if ($(this).val().length <= 1) {
+		//	$("#personaListDiv").css("display", "block");
+		//}
+		//else {
+		//	$("#personaListDiv").css("display", "none");
+		//}
+	});
+
+	$("#personaSearch").on('keyup', function () {
+		if ($(this).val().length <= 1) {
+			$("#personaListDiv").css("display", "block");
+		}
+		else {
+			$("#personaListDiv").css("display", "none");
+		}
+	});
+
+	$("#personaSearch").focusout(function () {
+		window.setTimeout(function () { $("#personaListDiv").hide() }, 200);
+		$("#personaSearch").val($("#lastSelectedPersona").val());
+		//$("#personaListDiv").css("display", "none");
+	});
+
+	$("#personaListDiv").css("display", "none");
+
+	$('#personaSearch').on('focus', function(e){
+		$('#wrapper').addClass('persona-open');
+		// var headerHeight = $('.header').outerHeight();
+        var backdropPersona = $('<div class="backdrop-persona"></div>');
+        $('body').append(backdropPersona);
+		// $('.backdrop-persona').css('top', headerHeight);
+		$('.header').css({
+			'background-color': 'white',
+			'position': 'relative',
+			'z-index': '999'
+		});
+	});
+	
+	$('#personaSearch').on('focusout', function(e){
+		$('#wrapper').removeClass('persona-open');
+		$('.backdrop-persona').remove();
+		$('.header').removeAttr('style');
+
+	});
+	$(document).on('click touchStart', function(e){
+        if (!$('.persona-search > .component-content').is(e.target) && $('.persona-search > .component-content').has(e.target).length === 0) {
+			$('#wrapper').removeClass('persona-open');
+			$('.backdrop-persona').remove();
+            $('.header').removeAttr('style');
+
+        }
+    });
+});
+
+function ShowHidePersona(id) {
+	$("#selectedPersonaDiv").empty(); // first clear DIV
+	// now clone the correct persona container from the hidden section
+	$("#hiddenPersonaDiv").find('#' + id).clone().appendTo("#selectedPersonaDiv");
+	// (re)set persona cookie for this page
+	if ($('input#personaCookieAllowed').val()) {
+		if ($('input#personaCookieAllowed').val() == 'true') {
+			AddOrUpdatePersonaCookieValue('persona-cookie', id);
+			UpdatePersonaSearchboxInputField(id);
+		}
+	}
+}
+
+function UpdatePersonaSearchboxInputField(id) {
+	var element = $("[data-personaid=" + id + "]");
+	if (element) {
+		$("#personaSearch").val(element[0].innerText);
+	}
+}
+
+function AddOrUpdatePersonaCookieValue(cookiename, personaid) {
+	if ($('input#currentPageShortId').val()) {
+		var cookieValue = GetPersonaCookie('persona-cookie');
+		if (cookieValue) {
+			var newCookieValue = '';
+			var a = cookieValue.split(","), i;
+			var foundExistingValue = false;
+			for (i = 0; i < a.length; i++) {
+				var pagePersonaCookieValue = a[i];
+				if (!pagePersonaCookieValue.startsWith($('input#currentPageShortId').val())) {
+					newCookieValue += pagePersonaCookieValue + ',';
+				}
+				else {
+					foundExistingValue = true;
+					var pagePersonaCookieArray = pagePersonaCookieValue.split("|");
+					newCookieValue += pagePersonaCookieArray[0] + '|' + personaid + ',';
+				}
+			}
+
+			if (!foundExistingValue) {
+				newCookieValue += $('input#currentPageShortId').val() + '|' + personaid + ',';
+			}
+
+			if (newCookieValue == '') {
+				SetPersonaCookie(cookiename, '', -1);
+			}
+			else {
+				SetPersonaCookie(cookiename, newCookieValue.slice(0, -1), 365);
+			}
+		}
+		else {
+			SetPersonaCookie(cookiename, $('input#currentPageShortId').val() + '|' + personaid, 365);
+		}
+	}
+
+}
+
+function GetPersonaCookie(name) {
+	var v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+	return v ? v[2] : null;
+}
+
+function SetPersonaCookie(name, value, days) {
+	var d = new Date;
+	d.setTime(d.getTime() + 24 * 60 * 60 * 1000 * days);
+	document.cookie = name + "=" + value + ";path=/;expires=" + d.toGMTString();
+}
+
+function DeleteFromPersonaCookie(name) {
+	if ($('input#currentPageShortId').val()) {
+		var cookieValue = GetPersonaCookie('persona-cookie');
+		if (cookieValue) {
+			var newCookieValue = '';
+			var a = cookieValue.split(","), i;
+			for (i = 0; i < a.length; i++) {
+				var pagePersonaCookieValue = a[i];
+				if (!pagePersonaCookieValue.startsWith($('input#currentPageShortId').val())) {
+					newCookieValue += pagePersonaCookieValue + ',';
+				}
+			}
+
+			if (newCookieValue == '') {
+				SetPersonaCookie(name, '', -1);
+			}
+			else {
+				SetPersonaCookie(name, newCookieValue.slice(0, -1), 365);
+			}
+		}
+	}
+}

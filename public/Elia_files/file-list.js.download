@@ -1,0 +1,7 @@
+$( document ).ready(function() {
+    if ($('.file-list-files').length) {
+		$('.list-item a').each(function(){
+			$(this).removeAttr("title");
+		});
+    }
+});

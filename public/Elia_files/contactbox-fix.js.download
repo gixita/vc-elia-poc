@@ -1,0 +1,3 @@
+jQuery("a[href^='http://fax:'], a[href^='http://tel:']").each(function() {
+    $(this).attr("href", $(this).attr("href").replace("http://", "").replace("https://", ""));
+});

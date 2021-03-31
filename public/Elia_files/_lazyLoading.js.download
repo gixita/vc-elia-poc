@@ -1,0 +1,41 @@
+if (!$('.on-page-editor').length) {
+    function setLazyLoading(elazyLoadWrap, elazyLoadItem) {
+		var loadMoreText = 'Load more';
+		if ($('#pclistloadmoretext').length > 0) {
+			if ($('#pclistloadmoretext').val()==""){
+				loadMoreText = 'Load more';
+			}
+			else{
+				loadMoreText = $('#pclistloadmoretext').val();
+			}
+		}
+		else if ($('#newslistloadmoretext').length > 0) {
+			if ($('#newslistloadmoretext').val()==""){
+				loadMoreText = 'Load more';
+			}
+			else{
+				loadMoreText = $('#newslistloadmoretext').val();
+			}
+		}
+        var loadMoreBtn = $('<p><button type="button" class="btn-show-more">' + loadMoreText + '</button></p>');
+        var lazyLoadWrap = elazyLoadWrap;
+        var lazyLoadItem = lazyLoadWrap.find(elazyLoadItem); 
+        var lazyLoadItemsAmount = lazyLoadItem.length;
+        lazyLoadItem.slice(6,lazyLoadItemsAmount).addClass('hidden');
+        if (!lazyLoadWrap.find('.btn-show-more').length && lazyLoadItemsAmount > 6 ) {
+            lazyLoadWrap.append(loadMoreBtn)
+        } 
+
+        loadMoreBtn.click(function(e) {
+            var lazyLoadItemHidden = lazyLoadWrap.find(lazyLoadItem).closest('.hidden'); 
+            e.preventDefault();
+            lazyLoadItemHidden.prev().nextAll().slice(0, 6).removeClass('hidden');
+            if(lazyLoadItem.hasClass('hidden')) {
+                loadMoreBtn.removeClass('hidden');
+            } else {
+                loadMoreBtn.addClass('hidden');
+            }
+        });
+     
+    }   
+}
