@@ -13,7 +13,7 @@ module.exports = class ClaimManagement
         });
         
       app.get('/' + this.base_uri + '/qrcode', (req, res) => {
-        res.render(this.view_folder + '/index')
+        res.render(this.view_folder + '/qrcode')
     });
     }
 };

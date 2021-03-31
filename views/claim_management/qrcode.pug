@@ -1,0 +1,63 @@
+doctype html
+// saved from url=(0047)https://colorlib.com/etc/lf/Login_v1/index.html
+head
+  meta(http-equiv='Content-Type' content='text/html; charset=UTF-8')
+  title Login V1
+  meta(name='viewport' content='width=device-width, initial-scale=1')
+  link(rel='icon' type='image/png' href='https://colorlib.com/etc/lf/Login_v1/images/icons/favicon.ico')
+  link(rel='stylesheet' type='text/css' href='../Login V1_files/bootstrap.min.css')
+  link(rel='stylesheet' type='text/css' href='../Login V1_files/font-awesome.min.css')
+  link(rel='stylesheet' type='text/css' href='../Login V1_files/animate.css')
+  link(rel='stylesheet' type='text/css' href='../Login V1_files/hamburgers.min.css')
+  link(rel='stylesheet' type='text/css' href='../Login V1_files/select2.min.css')
+  link(rel='stylesheet' type='text/css' href='../Login V1_files/util.css')
+  link(rel='stylesheet' type='text/css' href='../Login V1_files/main.css')
+.limiter
+  .container-login100
+    .wrap-login100
+      .login100-pic.js-tilt(data-tilt='' style='transform: perspective(300px) rotateX(-5.91deg) rotateY(-1.27deg) scale3d(1.1, 1.1, 1.1); will-change: transform; transition: all 400ms cubic-bezier(0.03, 0.98, 0.52, 0.99) 0s;')
+        img(src='../qr-code.png' alt='IMG')
+      form.login100-form.validate-form
+        span.login100-form-title
+          | Claim Management
+        .wrap-input100.validate-input(data-validate='Valid email is required: ex@abc.xyz')
+          // <input class="input100" type="text" name="payload" placeholder="Payload">
+          textarea.areainput100(name='payloadinput' rows='4' cols='50')
+            | {
+            |       "@context": [
+            |         "https://www.w3.org/2018/credentials/v1",
+            |         "https://www.w3.org/2018/credentials/examples/v1"
+            |       ],
+            |       "id": "https://example.com/credentials/1872",
+            |       "type": ["VerifiableCredential", "AlumniCredential"],
+            |       "issuer": "https://example.edu/issuers/565049",
+            |       "issuanceDate": "2010-01-01T19:23:24Z",
+            |       "credentialSubject": {
+            |         "id": "did:example:ebfeb1f712ebc6f1c276e12ec21",
+            |        "alumniOf": "Example University"
+            |      }
+        .container-login100-form-btn
+          button.login100-form-btn
+            | Copy
+        .text-center.p-t-12
+          span.txt1
+            | direct 
+          a.txt2(href='../user_app/index')
+            | link
+script(src='../Login V1_files/jquery-3.2.1.min.js.download')
+script(src='../Login V1_files/popper.js.download')
+script(src='../Login V1_files/bootstrap.min.js.download')
+script(src='../Login V1_files/select2.min.js.download')
+script(src='../Login V1_files/tilt.jquery.min.js.download')
+script.
+  $('.js-tilt').tilt({
+  scale: 1.1
+  })
+script(async='' src='../Login V1_files/js')
+script.
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'UA-23581568-13');
+script(src='../Login V1_files/main.js.download')
+script(defer='' src='../Login V1_files/beacon.min.js.download' data-cf-beacon='{"rayId":"63899d82bb5505c4","version":"2021.3.0","si":10}')
