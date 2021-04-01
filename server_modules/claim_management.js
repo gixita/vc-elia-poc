@@ -15,7 +15,7 @@ module.exports = class ClaimManagement
   
   regApp(app) 
   {
-    // PORTAL send post request to the claim manager to initialize the claim
+    
     app.get('/' + this.base_uri + '/index', (req, res) => {
       res.render(this.view_folder + '/index')
     });
@@ -30,8 +30,9 @@ module.exports = class ClaimManagement
     
     // CLAIM MANAGER display QR code with the claim received from the PORTAL
     app.get('/' + this.base_uri + '/qrcode', (req, res) => {
-      console.log(this.claim)
       res.render(this.view_folder + '/qrcode', {claim: this.claim})
+      // The direct link should open a new window
+      // on axios call redirect to portal 
     });
     
     

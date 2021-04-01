@@ -17,18 +17,20 @@ module.exports = class UserApp
             res.render(this.view_folder + '/index');
         });
         
-        // USER APP sign the claim
-        app.get('/' + this.base_uri + '/issue_verifiable_credential/:identity_id', (req, res) => {
+        // USER APP sign the claim :> vc_name by default should be "consent"
+        app.get('/' + this.base_uri + '/issue_verifiable_credential/:identity_id/:vc_name', (req, res) => {
             const credentialLink = "./credentials/alumni.jsonld";
             const identityID = req.params.identity_id;
+            const vcName = req.params.vc_name;
             const keyLink = "./identities/"+identityID+".json";
             const issueVC = new IssueVC(keyLink, credentialLink);
             issueVC.issue().then((res) => {
-                fs.writeFile('./verifiablecredentials/alumnisigned.json', JSON.stringify(res), function (err) {
+                fs.writeFile('./verifiablecredentials/'+vcName+'.json', JSON.stringify(res), function (err) {
                     if (err) return console.log(err);
                     console.log('VC written in the file');
                 });
             })
+            // make a axios call to the claim manager
             res.sendStatus(res.statusCode)
         });
         
