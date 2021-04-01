@@ -16,9 +16,14 @@ head
         each identity in identities
             div
                 input(id='radio'+identity type='radio' value=identity name='identity')
-                label.radio(for='radio'+identity) #{identity}       
-    button(type='submit') Approve
+                label.radio(for='radio'+identity) #{identity}     
+        br  
+        button(type='submit') Approve
     br
     br
+<<<<<<< HEAD
     a(href="create_identity")
       button(type='button') Create a new identity
+=======
+    button(type='submit') Create a new identity
+>>>>>>> 6e86d29158effb070fb8c5c64c9179757e7c9087
