@@ -1,13 +1,7 @@
-const fs = require('fs-extra');
-const credentialLink = "./credentials/alumni.jsonld";
-const axios = require("axios");
-const IssueVC = require('./lib/issueVC');
-const VerifyVC = require('./lib/verifyVC');
-const GenerateIdentity = require('./lib/generateIdentity');
 
-async function getClaim() {
-  return await fs.readFile(credentialLink);
-}
+
+const VerifyVC = require('./lib/verifyVC');
+
 
 module.exports = class ClaimManagement 
 {
@@ -23,9 +17,6 @@ module.exports = class ClaimManagement
   {
     // PORTAL send post request to the claim manager to initialize the claim
     app.get('/' + this.base_uri + '/index', (req, res) => {
-      getClaim().then((res) => { 
-        axios.post('http://localhost:3000/claim_management/claim_setter', {claim: res.toString()})
-      });
       res.render(this.view_folder + '/index')
     });
     
@@ -39,43 +30,11 @@ module.exports = class ClaimManagement
     
     // CLAIM MANAGER display QR code with the claim received from the PORTAL
     app.get('/' + this.base_uri + '/qrcode', (req, res) => {
+      console.log(this.claim)
       res.render(this.view_folder + '/qrcode', {claim: this.claim})
     });
     
-    // USER APP sign the claim
-    app.get('/' + this.base_uri + '/issue_verifiable_credential/:identity_id', (req, res) => {
-      const credentialLink = "./credentials/alumni.jsonld";
-      const identityID = req.params.identity_id;
-      const keyLink = "./identities/"+identityID+".json";
-      const issueVC = new IssueVC(keyLink, credentialLink);
-      issueVC.issue().then((res) => {
-        fs.writeFile('./verifiablecredentials/alumnisigned.json', JSON.stringify(res), function (err) {
-          if (err) return console.log(err);
-          console.log('VC written in the file');
-        });
-      })
-      res.sendStatus(res.statusCode)
-    });
     
-    // USER APP allow to select identity for the user
-    app.get('/' + this.base_uri + '/select_identity', (req, res) => {
-      const dir = './identities/';
-      var identities = [];
-      fs.readdir(dir, (err, files) => {
-        if (err) {
-          throw err;
-        }
-        files.forEach(file => {
-          let filename = file.split('.')[0]
-          identities.push(filename)  
-        });
-      });
-      identities.forEach(filename => {
-        console.log(filename)
-      })
-      
-      res.sendStatus(res.statusCode)
-    });
     
     
     // CLAIM MANAGER verifies the verifiable credential
@@ -89,18 +48,7 @@ module.exports = class ClaimManagement
       res.sendStatus(res.statusCode)
     });
     
-    // USER APP generate a new identity for the user
-    app.get('/' + this.base_uri + '/generate_identity/:identity_id', (req, res) => {
-      const identityID = req.params.identity_id;
-      const identity = new GenerateIdentity(identityID);
-      identity.generate().then((res) => {
-        fs.writeFile('./identities/'+identityID+'.json', res, function (err) {
-          if (err) return console.log(err);
-          console.log('Identity written in the file');
-        });
-      })
-      res.sendStatus(res.statusCode)
-    });
+    
     
     
     
