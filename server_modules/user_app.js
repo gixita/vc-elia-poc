@@ -40,8 +40,14 @@ module.exports = class UserApp
                 // Make the axios request
                 axios.post('http://localhost:3000/claim_management/notification_verification_is_available', {vc_name: vcName});
                 // res.redirect('/claim_management/verify_verifiable_credential/'+vcName)
+                res.redirect('/user_app/consent_sent');
                 });
             })
+        });
+
+        // USER APP sign the claim :> vc_name by default should be "consent"
+        app.get('/' + this.base_uri + '/consent_sent', (req, res) => {
+            res.render('user_app/consent_sent');
         });
         
         app.get('/' + this.base_uri + '/form-select-identity', (req, res) => {
