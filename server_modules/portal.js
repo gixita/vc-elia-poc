@@ -16,7 +16,6 @@ module.exports = class Portal
     regApp(app) 
     {
       app.get('/' + this.base_uri + '/index', (req, res) => {
-          console.log("here is the portal");
           const credentialLink = "./credentials/alumni.jsonld";
           getClaim(credentialLink).then((claim_from_file) => { 
             axios.post('http://localhost:3000/claim_management/claim_setter', {claim: claim_from_file.toString()})
