@@ -170,7 +170,7 @@ noscript
                       a.dropdown-link(href='https://www.elia.be/en/innovation') Innovation
                   .dropdown-content-item
                     nav
-                      a.dropdown-link(href='#' data-click='open-popup') Access 'My Metering'
+                      a.dropdown-link(href='#' onclick='document.getElementById("APOP").classList.remove("hidden");') Access 'My Metering'
               .nav-main-item.nav-main-item-search(style='display: inline-block;')
                 a#jsSearch.nav-main-link.icon-search(href='https://www.elia.be/#')
                   span.sr-only search
@@ -930,11 +930,11 @@ noscript
             a.dropdown-link(href='https://jobs.eliagroup.eu/' rel='noopener noreferrer' target='_blank') Elia Jobs
             a.external-link.pull-right.d-none.d-sm-block(href='https://jobs.eliagroup.eu/' rel='noopener noreferrer' target='_blank') jobs.eliagroup.eu
   main
-    .privacy-popup //.hidden(data-scope='agreement-popup')
+    .privacy-popup(id="APOP").hidden(data-scope='agreement-popup')
           .privacy-content
             h2(style='text-align: center;') Identity verification
             p(style='text-align: center;')
-              | To continue to 'My Metering' you must agree Elia's Group policy and verify your identity
+              | To continue to 'My Metering' you must agree with Elia's Group policy and verify your identity
               br
               br
               a.btn-primary(href='../claim_management/qrcode') Read and Sign agreement
