@@ -52,7 +52,7 @@ module.exports = class UserApp
                 });
                 console.log(identities)
                 // res.sendStatus(res.statusCode)
-                res.render(this.view_folder + '/select_identities', {identities: identities});
+                res.render(this.view_folder + '/select_identity', {identities: identities});
             });
         });
         

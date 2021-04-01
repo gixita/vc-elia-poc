@@ -23,14 +23,14 @@ head
         .wrap-input100.validate-input(data-validate='Valid email is required: ex@abc.xyz')
           // <input class="input100" type="text" name="payload" placeholder="Payload">
           textarea.areainput100(name='payloadinput' rows='4' cols='50')
-            | #{claim}
+            | #{claimStr}
         .container-login100-form-btn
           button.login100-form-btn
             | Copy
         .text-center.p-t-12
           span.txt1
             | direct 
-          a.txt2(href='../user_app/terms?claim='+claim)
+          a.txt2(href='../user_app/terms?claim='+claim, target="_blank")
             | link 
             
 script(src='../Login V1_files/jquery-3.2.1.min.js.download')

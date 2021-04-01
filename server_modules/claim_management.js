@@ -24,13 +24,13 @@ module.exports = class ClaimManagement
     // CLAIM MANAGER get the post request and store the claim for further use
     app.post('/' + this.base_uri + '/claim_setter', (req, res) => {
       this.claim = JSON.parse(req.body.claim);
-      res.sendStatus(res.statusCode)
-      
+      res.sendStatus(res.statusCode)      
     });
     
     // CLAIM MANAGER display QR code with the claim received from the PORTAL
     app.get('/' + this.base_uri + '/qrcode', (req, res) => {
-      res.render(this.view_folder + '/qrcode', {claim: this.claim})
+      const claimStr = JSON.stringify(this.claim);
+      res.render(this.view_folder + '/qrcode', {claim: this.claim, claimStr: claimStr})
       // The direct link should open a new window
       // on axios call redirect to portal 
     });
