@@ -13,10 +13,6 @@ module.exports = class UserApp
     
     regApp(app) 
     {
-        // app.get('/' + this.base_uri + '/index', (req, res) => {
-        //     res.render(this.view_folder + '/index');
-        // });
-
         app.get('/' + this.base_uri + '/terms', (req, res) => {
             const terms = fs.readFileSync("./terms.txt", 'utf8')
             res.render(this.view_folder + '/terms', {terms: terms});
@@ -59,8 +55,7 @@ module.exports = class UserApp
                     let filename = file.split('.')[0];
                     identities.push(filename)  
                 });
-                console.log(identities)
-                // res.sendStatus(res.statusCode)
+                //console.log(identities)
                 res.render(this.view_folder + '/select_identity', {identities: identities});
             });
         });

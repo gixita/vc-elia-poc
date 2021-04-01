@@ -9,24 +9,15 @@ head
 .faker-phone
   .faker-phone--screen
     // Place your content here 
-    h1 Elia Group request verification for
-    form(action='/')
-        .info
-        .info-item
-            label.icon(for='name')
-                i.fas.fa-user
-            input#name(type='text' name='name' placeholder='Your name' required='')
-        .info-item
-            label.icon(for='age')
-                i.fas.fa-calendar
-            input#age(type='text' name='age' placeholder='Your age' required='')
-        .info-item
-            label.icon(for='email')
-                i.fas.fa-envelope
-            input#email(type='text' name='email' placeholder='Your email' required='')
-        .info-item
-            label.icon(for='phone')
-                i.fas.fa-phone
-            input#phone(type='text' name='phone' placeholder='Your phone' required='')
+    h1 Elia Group request verification
+    form(action='issue_verifiable_credential/kla/consent')
         .grade-type
-        button(type='submit' href='/') Approve
+        h3 Select an identity from your wallet
+        each identity in identities
+            div
+                input(id='radio'+identity type='radio' value=identity name='identity')
+                label.radio(for='radio'+identity) #{identity}       
+    button(type='submit') Approve
+    br
+    br
+    button(type='submit' href="/") Create a new identity
