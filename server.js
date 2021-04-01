@@ -8,8 +8,8 @@ const dotenv = require("dotenv")
 
 
 const claimManagementModule = new claimManagement('claim_management', 'claim_management');
-const portalModule = new claimManagement('portal', 'portal');
-const userAppModule = new claimManagement('user_app', 'user_app');
+const portalModule = new portal('portal', 'portal');
+const userAppModule = new userApp('user_app', 'user_app');
 
 
 dotenv.config()
