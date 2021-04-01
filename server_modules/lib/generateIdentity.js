@@ -1,6 +1,5 @@
 'use strict';
 const fs = require('fs-extra');
-const keyfile = require('../../my-key.json');
 const vc = require('vc-js');
 const {Ed25519KeyPair, suites: {Ed25519Signature2018}} =
 require('jsonld-signatures');

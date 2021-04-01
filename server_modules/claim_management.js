@@ -43,9 +43,10 @@ module.exports = class ClaimManagement
     });
     
     // USER APP sign the claim
-    app.get('/' + this.base_uri + '/issue_verifiable_credential', (req, res) => {
+    app.get('/' + this.base_uri + '/issue_verifiable_credential/:identity_id', (req, res) => {
       const credentialLink = "./credentials/alumni.jsonld";
-      const keyLink = "./my-key.json";
+      const identityID = req.params.identity_id;
+      const keyLink = "./identities/"+identityID+".json";
       const issueVC = new IssueVC(keyLink, credentialLink);
       issueVC.issue().then((res) => {
         fs.writeFile('./verifiablecredentials/alumnisigned.json', JSON.stringify(res), function (err) {
@@ -56,10 +57,31 @@ module.exports = class ClaimManagement
       res.sendStatus(res.statusCode)
     });
     
+    // USER APP allow to select identity for the user
+    app.get('/' + this.base_uri + '/select_identity', (req, res) => {
+      const dir = './identities/';
+      var identities = [];
+      fs.readdir(dir, (err, files) => {
+        if (err) {
+          throw err;
+        }
+        files.forEach(file => {
+          let filename = file.split('.')[0]
+          identities.push(filename)  
+        });
+      });
+      identities.forEach(filename => {
+        console.log(filename)
+      })
+      
+      res.sendStatus(res.statusCode)
+    });
+    
     
     // CLAIM MANAGER verifies the verifiable credential
-    app.get('/' + this.base_uri + '/verify_verifiable_credential', (req, res) => {
-      const verifiableCredentialLink = "./verifiablecredentials/alumnisigned.json";
+    app.get('/' + this.base_uri + '/verify_verifiable_credential/:vc_name', (req, res) => {
+      const vcName = req.params.vc_name;
+      const verifiableCredentialLink = "./verifiablecredentials/"+vcName+".json";
       const verifyVC = new VerifyVC(verifiableCredentialLink);
       verifyVC.verify().then((res) => {
         console.log(res)
