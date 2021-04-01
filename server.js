@@ -4,12 +4,15 @@ const claimManagement = require('./server_modules/claim_management.js')
 const portal = require('./server_modules/portal.js')
 const userApp = require('./server_modules/user_app.js')
 const vc = require('vc-js');
+const dotenv = require("dotenv")
+
 
 const claimManagementModule = new claimManagement('claim_management', 'claim_management');
 const portalModule = new claimManagement('portal', 'portal');
 const userAppModule = new claimManagement('user_app', 'user_app');
 
-//import data from './data/artists.json'
+
+dotenv.config()
 const app = express();
 app.set('view engine', 'pug');
 app.use(express.static(__dirname + '/public'));

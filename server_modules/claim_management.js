@@ -1,7 +1,9 @@
 const fs = require('fs-extra');
 const credentialLink = "./credentials/alumni.jsonld";
 const axios = require("axios");
-var bodyParser = require('body-parser')
+const IssueVC = require('../issueVC');
+const VerifyVC = require('../verifyVC');
+const GenerateIdentity = require('../generateIdentity');
 
 async function getClaim() {
   return await fs.readFile(credentialLink);
@@ -39,6 +41,46 @@ module.exports = class ClaimManagement
     app.get('/' + this.base_uri + '/qrcode', (req, res) => {
       res.render(this.view_folder + '/qrcode', {claim: this.claim})
     });
+    
+    // USER APP sign the claim
+    app.get('/' + this.base_uri + '/issue_verifiable_credential', (req, res) => {
+      const credentialLink = "./credentials/alumni.jsonld";
+      const keyLink = "./my-key.json";
+      const issueVC = new IssueVC(keyLink, credentialLink);
+      issueVC.issue().then((res) => {
+        fs.writeFile('./alumnisigned.json', JSON.stringify(res), function (err) {
+          if (err) return console.log(err);
+          console.log('VC written in the file');
+        });
+      })
+      res.sendStatus(res.statusCode)
+    });
+    
+    
+    // CLAIM MANAGER verifies the verifiable credential
+    app.get('/' + this.base_uri + '/verify_verifiable_credential', (req, res) => {
+      const verifiableCredentialLink = "./alumnisigned.json";
+      const verifyVC = new VerifyVC(verifiableCredentialLink);
+      verifyVC.verify().then((res) => {
+        console.log(res)
+      });
+      res.sendStatus(res.statusCode)
+    });
+    
+    // USER APP generate a new identity for the user
+    app.get('/' + this.base_uri + '/generate_identity/:identity_id', (req, res) => {
+      const identityID = req.params.identity_id;
+      const identity = new GenerateIdentity(identityID);
+      identity.generate().then((res) => {
+        fs.writeFile('./identities/'+identityID+'.json', res, function (err) {
+          if (err) return console.log(err);
+          console.log('Identity written in the file');
+        });
+      })
+      res.sendStatus(res.statusCode)
+    });
+    
+    
     
   }
 };
