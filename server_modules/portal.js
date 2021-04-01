@@ -9,8 +9,9 @@ module.exports = class Portal
     regApp(app) 
     {
       app.get('/' + this.base_uri + '/index', (req, res) => {
-            res.render(this.view_folder + '/index')
-        });
+          console.log("here is the portal");
+          res.render(this.view_folder + '/index')
+      });
 
       //app.use(express.static(__dirname + '/' + this.view_folder + '/Elia_files'));
     }

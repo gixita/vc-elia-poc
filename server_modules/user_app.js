@@ -9,7 +9,8 @@ module.exports = class UserApp
     regApp(app) 
     {
       app.get('/' + this.base_uri + '/index', (req, res) => {
-            res.render(this.view_folder + '/index')
+            console.log('test user app');
+            res.render(this.view_folder + '/index');
         });
     }
 };

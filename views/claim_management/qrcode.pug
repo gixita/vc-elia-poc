@@ -23,27 +23,16 @@ head
         .wrap-input100.validate-input(data-validate='Valid email is required: ex@abc.xyz')
           // <input class="input100" type="text" name="payload" placeholder="Payload">
           textarea.areainput100(name='payloadinput' rows='4' cols='50')
-            | {
-            |       "@context": [
-            |         "https://www.w3.org/2018/credentials/v1",
-            |         "https://www.w3.org/2018/credentials/examples/v1"
-            |       ],
-            |       "id": "https://example.com/credentials/1872",
-            |       "type": ["VerifiableCredential", "AlumniCredential"],
-            |       "issuer": "https://example.edu/issuers/565049",
-            |       "issuanceDate": "2010-01-01T19:23:24Z",
-            |       "credentialSubject": {
-            |         "id": "did:example:ebfeb1f712ebc6f1c276e12ec21",
-            |        "alumniOf": "Example University"
-            |      }
+            | #{claim}
         .container-login100-form-btn
           button.login100-form-btn
             | Copy
         .text-center.p-t-12
           span.txt1
             | direct 
-          a.txt2(href='../user_app/index')
-            | link
+          a.txt2(href='../user_app/index?claim='+claim)
+            | link 
+            
 script(src='../Login V1_files/jquery-3.2.1.min.js.download')
 script(src='../Login V1_files/popper.js.download')
 script(src='../Login V1_files/bootstrap.min.js.download')

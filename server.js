@@ -1,4 +1,5 @@
 const express = require('express')
+
 const claimManagement = require('./server_modules/claim_management.js')
 const portal = require('./server_modules/portal.js')
 const userApp = require('./server_modules/user_app.js')
@@ -12,6 +13,8 @@ const userAppModule = new claimManagement('user_app', 'user_app');
 const app = express();
 app.set('view engine', 'pug');
 app.use(express.static(__dirname + '/public'));
+app.use(express.urlencoded({extended: true}));
+app.use(express.json())
 
 app.get('/', (req,res) =>{
 	res.redirect('/index')
@@ -21,16 +24,6 @@ app.get('/index', (req, res) => {
     res.render('index')
 })
 
-app.post('/publickeydoc', (req,res) =>{
-	console.log('Got body:', req.body);
-	publicKeyDoc = req.body;
-	res.sendStatus(200);
-  })
-  
-  app.get('/publickeydoc', (req,res) =>{
-	  console.log('Got body:', publicKeyDoc);
-	  res.sendStatus(200);
-  })
 
 claimManagementModule.regApp(app);
 portalModule.regApp(app);

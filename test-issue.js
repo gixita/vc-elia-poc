@@ -13,7 +13,7 @@ const {Ed25519KeyPair, suites: {Ed25519Signature2018}} =
 const EcdsaSepc256k1Signature2019 = require('ecdsa-secp256k1-signature-2019');
 const Secp256k1KeyPair = require('secp256k1-key-pair');
 
-var cmd;
+
 var credentialLink = "./credentials/alumni.jsonld";
 var keyLink = "./my-key.json";
 
