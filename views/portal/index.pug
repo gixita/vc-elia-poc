@@ -170,7 +170,7 @@ noscript
                       a.dropdown-link(href='https://www.elia.be/en/innovation') Innovation
                   .dropdown-content-item
                     nav
-                      a.dropdown-link(href='../claim_management/qrcode') Sign Agreement
+                      a.dropdown-link(href='#' data-click='open-popup') Access 'My Metering'
               .nav-main-item.nav-main-item-search(style='display: inline-block;')
                 a#jsSearch.nav-main-link.icon-search(href='https://www.elia.be/#')
                   span.sr-only search
@@ -930,6 +930,14 @@ noscript
             a.dropdown-link(href='https://jobs.eliagroup.eu/' rel='noopener noreferrer' target='_blank') Elia Jobs
             a.external-link.pull-right.d-none.d-sm-block(href='https://jobs.eliagroup.eu/' rel='noopener noreferrer' target='_blank') jobs.eliagroup.eu
   main
+    .privacy-popup //.hidden(data-scope='agreement-popup')
+          .privacy-content
+            h2(style='text-align: center;') Identity verification
+            p(style='text-align: center;')
+              | To continue to 'My Metering' you must agree Elia's Group policy and verify your identity
+              br
+              br
+              a.btn-primary(href='../claim_management/qrcode') Read and Sign agreement
     .row
       .component.hero-hp.col-12
         .component-content
@@ -1994,7 +2002,7 @@ script(src='../Elia_files//news-list.js.download')
 script(src='../Elia_files//component-search-results-filter.js(1).download')
 script(src='../Elia_files//pageScrollIndicator.js.download')
 script(src='../Elia_files//persona-search.js.download')
-script(src='../Elia_files//popup.js.download')
+script(src='../Elia_files//popup.js')
 script(src='../Elia_files//public-consultationslist.js.download')
 script(src='../Elia_files//search-accordion.js.download')
 script(src='../Elia_files//search-sidebar.js.download')
