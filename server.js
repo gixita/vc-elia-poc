@@ -6,7 +6,6 @@ const userApp = require('./server_modules/user_app.js')
 const vc = require('vc-js');
 const dotenv = require("dotenv")
 
-
 const claimManagementModule = new claimManagement('claim_management', 'claim_management');
 const portalModule = new portal('portal', 'portal');
 const userAppModule = new userApp('user_app', 'user_app');

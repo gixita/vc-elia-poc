@@ -12,10 +12,14 @@ module.exports = class UserApp
     
     regApp(app) 
     {
-        app.get('/' + this.base_uri + '/index', (req, res) => {
-            console.log('test user app');
-            res.render(this.view_folder + '/index');
-        });
+        // app.get('/' + this.base_uri + '/index', (req, res) => {
+        //     res.render(this.view_folder + '/index');
+        // });
+
+        app.get('/' + this.base_uri + '/terms', (req, res) => {
+            const terms = fs.readFileSync("./terms.txt", 'utf8')
+            res.render(this.view_folder + '/terms', {terms: terms});
+        });        
         
         // USER APP sign the claim
         app.get('/' + this.base_uri + '/issue_verifiable_credential/:identity_id', (req, res) => {
@@ -45,7 +49,8 @@ module.exports = class UserApp
                     identities.push(filename)  
                 });
                 console.log(identities)
-                res.sendStatus(res.statusCode)
+                // res.sendStatus(res.statusCode)
+                res.render(this.view_folder + '/select_identities', {identities: identities});
             });
         });
         

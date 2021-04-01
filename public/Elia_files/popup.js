@@ -29,7 +29,13 @@ $(document).ready(function(){
         openPopup: function() {
             var baseName = 'notificationpopup';
             var cookieName = baseName + '-' + popup.popupIdVal;
-            var popupCookie = '';//popup.getPopupCookie(cookieName);
+            var popupCookie = popup.getPopupCookie(cookieName);
+            if (popupCookie == '') {
+                popup.popupwrap.removeClass('hidden');
+                $('body').addClass('notificationpopup-open');
+            }
+        },
+        openPopupVCJS: function() {
             if (popupCookie == '') {
                 popup.popupwrap.removeClass('hidden');
                 $('body').addClass('notificationpopup-open');

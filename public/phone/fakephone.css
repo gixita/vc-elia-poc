@@ -126,8 +126,9 @@ body {
   opacity: 1;
   }
   textarea {
-  width: 99%;
-  margin-bottom: 12px;
+    width: 95%;
+    margin-bottom: 12px;
+    height: 200px;
   }
   button {
   width: 100%;
