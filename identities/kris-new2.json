@@ -1,0 +1,8 @@
+{
+  "passphrase": null,
+  "id": "https://gist.githubusercontent.com/gixita/9059877873537bdc9df3f6d3ed5902fa/raw",
+  "controller": "https://gist.githubusercontent.com/gixita/d6ab51ef12517ebb6ac75464315e2a71/raw",
+  "type": "Ed25519VerificationKey2018",
+  "privateKeyBase58": "5wGtdJp52mEXMyFXZW7mQLAJY8HJPBmBHhyqgATvjAaBXnBoZDMVtkkQkRwEa6nPpsUEEiingefUVTMPMCGiES3g",
+  "publicKeyBase58": "5ndaNmcN44Wqok72M13xbtNi1kQKCDquy13WXH9Qdz8n"
+}

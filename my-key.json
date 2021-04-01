@@ -1,8 +1,8 @@
 {
-  "passphrase": null,
-  "id": "https://gist.githubusercontent.com/gixita/fbe729dbc46554538019eb9a5f5c4764/raw",
-  "controller": "https://gist.githubusercontent.com/gixita/591147773c1442f065ea9a2f898688cc/raw",
-  "type": "Ed25519VerificationKey2018",
-  "privateKeyBase58": "56Y9eq7AqwCFfDU9RqEcJKSpzLE2kgbQRccCw8Fzt29RZHXh6f5PAx3NoLR2abo5o2BwMH7EssJs7Bhex1Yp8Ucz",
-  "publicKeyBase58": "KfnDzhBZchXr3cMPn6a2EHzLkad785L8k27uLxvw4CJ"
+    "passphrase": null,
+    "id": "https://gist.githubusercontent.com/gixita/fbe729dbc46554538019eb9a5f5c4764/raw",
+    "controller": "https://gist.githubusercontent.com/gixita/591147773c1442f065ea9a2f898688cc/raw",
+    "type": "Ed25519VerificationKey2018",
+    "privateKeyBase58": "56Y9eq7AqwCFfDU9RqEcJKSpzLE2kgbQRccCw8Fzt29RZHXh6f5PAx3NoLR2abo5o2BwMH7EssJs7Bhex1Yp8Ucz",
+    "publicKeyBase58": "KfnDzhBZchXr3cMPn6a2EHzLkad785L8k27uLxvw4CJ"
 }

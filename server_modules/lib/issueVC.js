@@ -3,9 +3,9 @@
 */
 'use strict';
 const fs = require('fs-extra');
-const keyfile = require('./my-key.json');
+const keyfile = require('../../my-key.json');
 
-const documentLoader = require('./vc-js-cli/lib/document-loader');
+const documentLoader = require('../../vc-js-cli/lib/document-loader');
 const getStdin = require('get-stdin');
 const vc = require('vc-js');
 const {Ed25519KeyPair, suites: {Ed25519Signature2018}} =

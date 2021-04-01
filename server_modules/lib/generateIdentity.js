@@ -1,12 +1,12 @@
 'use strict';
 const fs = require('fs-extra');
-const keyfile = require('./my-key.json');
+const keyfile = require('../../my-key.json');
 const vc = require('vc-js');
 const {Ed25519KeyPair, suites: {Ed25519Signature2018}} =
 require('jsonld-signatures');
 const EcdsaSepc256k1Signature2019 = require('ecdsa-secp256k1-signature-2019');
 const Secp256k1KeyPair = require('secp256k1-key-pair');
-const Gist = require('./vc-js-cli/lib/Gist');
+const Gist = require('../../vc-js-cli/lib/Gist');
 
 
 module.exports = class GenerateIdentity

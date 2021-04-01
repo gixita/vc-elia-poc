@@ -1,9 +1,9 @@
 const fs = require('fs-extra');
 const credentialLink = "./credentials/alumni.jsonld";
 const axios = require("axios");
-const IssueVC = require('../issueVC');
-const VerifyVC = require('../verifyVC');
-const GenerateIdentity = require('../generateIdentity');
+const IssueVC = require('./lib/issueVC');
+const VerifyVC = require('./lib/verifyVC');
+const GenerateIdentity = require('./lib/generateIdentity');
 
 async function getClaim() {
   return await fs.readFile(credentialLink);
@@ -48,7 +48,7 @@ module.exports = class ClaimManagement
       const keyLink = "./my-key.json";
       const issueVC = new IssueVC(keyLink, credentialLink);
       issueVC.issue().then((res) => {
-        fs.writeFile('./alumnisigned.json', JSON.stringify(res), function (err) {
+        fs.writeFile('./verifiablecredentials/alumnisigned.json', JSON.stringify(res), function (err) {
           if (err) return console.log(err);
           console.log('VC written in the file');
         });
@@ -59,7 +59,7 @@ module.exports = class ClaimManagement
     
     // CLAIM MANAGER verifies the verifiable credential
     app.get('/' + this.base_uri + '/verify_verifiable_credential', (req, res) => {
-      const verifiableCredentialLink = "./alumnisigned.json";
+      const verifiableCredentialLink = "./verifiablecredentials/alumnisigned.json";
       const verifyVC = new VerifyVC(verifiableCredentialLink);
       verifyVC.verify().then((res) => {
         console.log(res)
