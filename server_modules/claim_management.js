@@ -10,6 +10,7 @@ module.exports = class ClaimManagement
     this.base_uri = base_uri;
     this.view_folder = view_folder;
     this.claim = 'not initialized claim';
+    this.notification_verification_is_available = '';
   }
   
   
@@ -26,7 +27,18 @@ module.exports = class ClaimManagement
       this.claim = JSON.parse(req.body.claim);
       res.sendStatus(res.statusCode)      
     });
-    
+
+    // CLAIM MANAGER receive in post the information that the vc is ready
+    app.post('/' + this.base_uri + '/notification_verification_is_available', (req, res) => {
+      this.notification_verification_is_available = req.body.vc_name;
+      res.sendStatus(res.statusCode)      
+    });
+
+    app.get('/' + this.base_uri + '/get_notification_verification_is_available', (req, res) => {
+      if (this.notification_verification_is_available != '') res.send(true);
+      else res.send(false);      
+    });
+
     // CLAIM MANAGER display QR code with the claim received from the PORTAL
     app.get('/' + this.base_uri + '/qrcode', (req, res) => {
       const claimStr = JSON.stringify(this.claim);
