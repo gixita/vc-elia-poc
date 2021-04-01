@@ -38,7 +38,8 @@ module.exports = class UserApp
                     if (err) return console.log(err);
                     console.log('VC written in the file');
                 // Make the axios request
-                res.redirect('/claim_management/verify_verifiable_credential/'+vcName)
+                axios.post('http://localhost:3000/claim_management/notification_verification_is_available', {vc_name: vcName});
+                // res.redirect('/claim_management/verify_verifiable_credential/'+vcName)
                 });
             })
         });
