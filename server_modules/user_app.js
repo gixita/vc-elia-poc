@@ -43,6 +43,10 @@ module.exports = class UserApp
             })
         });
         
+        app.get('/' + this.base_uri + '/form-select-identity', (req, res) => {
+            res.redirect('/' + this.base_uri + '/issue_verifiable_credential/' + req.query.identity + "/consent");
+        })
+
         // USER APP allow to select identity for the user
         app.get('/' + this.base_uri + '/select_identity', (req, res) => {
             const dir = './identities/';
