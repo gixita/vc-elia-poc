@@ -1,0 +1,9 @@
+a.btn-success:hover, a.btn-success:active, a.btn-success:focus, button.btn-success:hover, button.btn-success:active, button.btn-success:focus {
+	background-color: #53ac62;
+}
+
+a.btn-success, button.btn-success {
+	background-color: #38a522;
+	color: white;
+}
+

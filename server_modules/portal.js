@@ -23,6 +23,10 @@ module.exports = class Portal
           res.render(this.view_folder + '/index')
       });
 
+      app.get('/' + this.base_uri + '/verified', (req, res) => {
+        res.render(this.view_folder + '/verified')
+    });
+
       //app.use(express.static(__dirname + '/' + this.view_folder + '/Elia_files'));
     }
 };
