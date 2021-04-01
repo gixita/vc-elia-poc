@@ -1,6 +1,7 @@
 const IssueVC = require('./lib/issueVC');
 const GenerateIdentity = require('./lib/generateIdentity');
 const fs = require('fs-extra');
+const axios = require('axios');
 
 module.exports = class UserApp 
 {
@@ -21,6 +22,14 @@ module.exports = class UserApp
             res.render(this.view_folder + '/terms', {terms: terms});
         });        
         
+        app.get('/' + this.base_uri + '/create_identity', (req, res) => {
+            res.render(this.view_folder + '/create_identity');
+        });   
+
+        app.get('/' + this.base_uri + '/form-create-identity', (req, res) => {
+            res.redirect('/' + this.base_uri + '/generate_identity/'+req.query.name);
+        })
+
         // USER APP sign the claim :> vc_name by default should be "consent"
         app.get('/' + this.base_uri + '/issue_verifiable_credential/:identity_id/:vc_name', (req, res) => {
             const credentialLink = "./credentials/alumni.jsonld";
@@ -28,14 +37,14 @@ module.exports = class UserApp
             const vcName = req.params.vc_name;
             const keyLink = "./identities/"+identityID+".json";
             const issueVC = new IssueVC(keyLink, credentialLink);
-            issueVC.issue().then((res) => {
-                fs.writeFile('./verifiablecredentials/'+vcName+'.json', JSON.stringify(res), function (err) {
+            issueVC.issue().then((result) => {
+                fs.writeFile('./verifiablecredentials/'+vcName+'.json', JSON.stringify(result), function (err) {
                     if (err) return console.log(err);
                     console.log('VC written in the file');
+                // Make the axios request
+                res.redirect('/claim_management/verify_verifiable_credential/'+vcName)
                 });
             })
-            // make a axios call to the claim manager
-            res.sendStatus(res.statusCode)
         });
         
         // USER APP allow to select identity for the user
@@ -60,13 +69,14 @@ module.exports = class UserApp
         app.get('/' + this.base_uri + '/generate_identity/:identity_id', (req, res) => {
             const identityID = req.params.identity_id;
             const identity = new GenerateIdentity(identityID);
-            identity.generate().then((res) => {
-                fs.writeFile('./identities/'+identityID+'.json', res, function (err) {
+            identity.generate().then((result) => {
+                fs.writeFile('./identities/'+identityID+'.json', result, function (err) {
                     if (err) return console.log(err);
                     console.log('Identity written in the file');
+                    res.redirect('/user_app/issue_verifiable_credential/'+identityID+'/consent')
                 });
             })
-            res.sendStatus(res.statusCode)
+            
         });
         
     }
